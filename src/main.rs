@@ -3,7 +3,7 @@ extern crate termion;
 use std::fs;
 use termion::color;
 
-fn read_sys(path: &str) -> u16 {
+fn read_val(path: &str) -> u16 {
     fs::read_to_string(path)
         .unwrap()
         .trim()
@@ -11,13 +11,20 @@ fn read_sys(path: &str) -> u16 {
         .unwrap()
 }
 
+fn read_val_str(path: &str) -> String {
+    String::from(fs::read_to_string(path).unwrap().trim())
+}
+
 fn main() {
-    let sys_temp = read_sys("/sys/class/thermal/thermal_zone0/temp") / 1000; // celsius
-    let sys_batt_percent = read_sys("/sys/class/power_supply/BAT0/capacity"); // ideally would use BAT*
+    let sys_batt_percent = read_val("/sys/class/power_supply/BAT0/capacity"); // ideally would use BAT*
+
     println!(
-        "temp: {red}{}c{reset}\npercent: {}%",
-        sys_temp,
+        "running at {red}{sys_temp}c{reset}
+on {kernel_vers}
+percent: {}%",
         sys_batt_percent,
+        sys_temp = read_val("/sys/class/thermal/thermal_zone0/temp") / 1000, // celsius
+        kernel_vers = read_val_str("/proc/sys/kernel/osrelease"), // equivalent to uname -r
         red = color::Fg(color::Red),
         reset = color::Fg(color::Reset),
     );
