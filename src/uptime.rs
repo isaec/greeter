@@ -40,18 +40,19 @@ pub fn get() -> String {
     .parse::<f64>()
     .unwrap()
     / 60 as f64;
-  let years = Time::new("year", float_minutes / YEAR);
-  let days = Time::new("day", float_minutes % YEAR / DAY);
-  let hours = Time::new("hour", float_minutes % DAY / HOUR);
-  let minutes = Time::new("minute", float_minutes % HOUR);
 
-  if years.value > 0 {
-    format!("{}, {}, {}, and {}", years, days, hours, minutes)
-  } else if days.value > 0 {
-    format!("{}, {}, and {}", days, hours, minutes)
-  } else if hours.value > 0 {
-    format!("{} and {}", hours, minutes)
-  } else {
-    format!("{}", minutes)
+  let mut time = vec![
+    Time::new("year", float_minutes / YEAR),
+    Time::new("day", float_minutes % YEAR / DAY),
+    Time::new("hour", float_minutes % DAY / HOUR),
+    Time::new("minute", float_minutes % HOUR),
+  ];
+  time.retain(|unit| unit.value != 0);
+  let len = time.len() - 1;
+  let mut result = "".to_string();
+  for (i, unit) in time.iter().enumerate() {
+    result = format!("{}{}{}", result, unit, if i == len { "" } else if i == len - 1 { " and " } else { ", " });
   }
+
+  result
 }
