@@ -27,6 +27,10 @@ impl fmt::Display for Time<'_> {
   }
 }
 
+const HOUR: f64 = 60 as f64;
+const DAY: f64 = HOUR * 24 as f64;
+const YEAR: f64 = DAY * 365 as f64;
+
 pub fn get() -> String {
   let raw = fs::read_to_string("/proc/uptime").unwrap();
   let float_minutes = raw
@@ -36,16 +40,11 @@ pub fn get() -> String {
     .parse::<f64>()
     .unwrap()
     / 60 as f64;
-  let years = Time::new("year", float_minutes / (60 * 24 * 365) as f64);
-  let days = Time::new("day", float_minutes / (60 * 24) as f64);
-  let hours = Time::new(
-    "hour",
-    (float_minutes % (float_minutes * (60 * 24) as f64)) / 60 as f64,
-  );
-  let minutes = Time::new(
-    "minute",
-    float_minutes - ((days.value * 60 * 24) + (hours.value * 60)) as f64,
-  );
+  let years = Time::new("year", float_minutes / YEAR);
+  let days = Time::new("day", float_minutes % YEAR / DAY);
+  let hours = Time::new("hour", float_minutes % DAY / HOUR);
+  let minutes = Time::new("minute", float_minutes % HOUR);
+
   if years.value > 0 {
     format!("{}, {}, {}, and {}", years, days, hours, minutes)
   } else if days.value > 0 {
