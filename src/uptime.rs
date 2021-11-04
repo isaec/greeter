@@ -1,49 +1,55 @@
+use std::fmt;
 use std::fs;
 
-fn plural(amount: u16, label: &str) -> String {
-  format!(
-      "{amount} {label}{plural}",
-      amount = amount,
-      label = label,
-      plural = if amount != 1 { "s" } else { "" }
-  )
+struct Time<'a> {
+  label: &'a str,
+  value: u16,
+}
+
+impl fmt::Display for Time<'_> {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(
+      f,
+      "{value} {label}{plural}",
+      value = self.value,
+      label = self.label,
+      plural = if self.value == 1 { "" } else { "s" }
+    )
+  }
 }
 
 pub fn get() -> String {
   let raw = fs::read_to_string("/proc/uptime").unwrap();
   let float_minutes = raw
-      .split_whitespace()
-      .next()
-      .unwrap()
-      .parse::<f32>()
-      .unwrap()
-      / 60 as f32;
-  let years = (float_minutes / (60 * 24 * 365) as f32) as u16;
-  let days = (float_minutes / (60 * 24) as f32) as u16;
-  let hours = ((float_minutes - (days * (60 * 24)) as f32) / 60 as f32) as u16;
-  let minutes = (float_minutes - ((days * 60 * 24) + (hours * 60)) as f32) as u16;
-  if years > 0 {
-      format!(
-          "{}, {}, {}, and {}",
-          plural(years, "year"),
-          plural(days, "day"),
-          plural(hours, "hour"),
-          plural(minutes, "minute")
-      )
-  } else if days > 0 {
-      format!(
-          "{}, {}, and {}",
-          plural(days, "day"),
-          plural(hours, "hour"),
-          plural(minutes, "minute")
-      )
-  } else if hours > 0 {
-      format!(
-          "{} and {}",
-          plural(hours, "hour"),
-          plural(minutes, "minute")
-      )
+    .split_whitespace()
+    .next()
+    .unwrap()
+    .parse::<f32>()
+    .unwrap()
+    / 60 as f32;
+  let years = Time {
+    label: "year",
+    value: (float_minutes / (60 * 24 * 365) as f32) as u16,
+  };
+  let days = Time {
+    label: "day",
+    value: (float_minutes / (60 * 24) as f32) as u16,
+  };
+  let hours = Time {
+    label: "hour",
+    value: ((float_minutes - (days.value * (60 * 24)) as f32) / 60 as f32) as u16,
+  };
+  let minutes = Time {
+    label: "minute",
+    value: (float_minutes - ((days.value * 60 * 24) + (hours.value * 60)) as f32) as u16,
+  };
+  if years.value > 0 {
+    format!("{}, {}, {}, and {}", years, days, hours, minutes)
+  } else if days.value > 0 {
+    format!("{}, {}, and {}", days, hours, minutes)
+  } else if hours.value > 0 {
+    format!("{} and {}", hours, minutes)
   } else {
-      format!("{} minutes", plural(years, "year"))
+    format!("{}", minutes)
   }
 }
