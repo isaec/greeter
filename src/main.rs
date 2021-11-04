@@ -32,7 +32,7 @@ percent: {sys_batt_percent}%
         sys_temp = read_val("/sys/class/thermal/thermal_zone0/temp") / 1000, // celsius
         uptime = uptime,
         sys_batt_percent = sys_batt_percent,
-        batt_bar = bar::make(30, sys_batt_percent, "<", "/", "-", ">"),
+        batt_bar = bar::make(30, sys_batt_percent, color::Rgb(100, 200, 200), "<", "/", "-", ">"),
         kernel_vers = read_val_str("/proc/sys/kernel/osrelease"), // equivalent to uname -r
         red = color::Fg(color::Red),
         reset = color::Fg(color::Reset),
