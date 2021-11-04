@@ -3,6 +3,8 @@ extern crate termion;
 use std::fs;
 use termion::color;
 
+mod uptime;
+
 fn read_val(path: &str) -> u16 {
     fs::read_to_string(path)
         .unwrap()
@@ -17,10 +19,7 @@ fn read_val_str(path: &str) -> String {
 
 fn main() {
     let sys_batt_percent = read_val("/sys/class/power_supply/BAT0/capacity"); // ideally would use BAT*
-    let uptime = {
-        let raw = fs::read_to_string("/proc/uptime").unwrap();
-        String::from(raw.split_whitespace().next().unwrap())
-    };
+    let uptime = uptime::get();
 
     println!(
         "running at {red}{sys_temp}c{reset}
