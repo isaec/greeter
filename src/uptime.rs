@@ -32,8 +32,8 @@ const DAY: f64 = HOUR * 24 as f64;
 const YEAR: f64 = DAY * 365 as f64;
 
 pub fn get() -> String {
-  let raw = fs::read_to_string("/proc/uptime").unwrap();
-  let float_minutes = raw
+  let float_minutes = fs::read_to_string("/proc/uptime")
+    .unwrap()
     .split_whitespace()
     .next()
     .unwrap()
