@@ -3,7 +3,16 @@ use std::fs;
 
 struct Time<'a> {
   label: &'a str,
-  value: u16,
+  value: u64,
+}
+
+impl Time<'_> {
+  fn new<'a>(label: &'a str, value: f64) -> Time<'_> {
+    Time {
+      label,
+      value: value as u64,
+    }
+  }
 }
 
 impl fmt::Display for Time<'_> {
@@ -24,25 +33,19 @@ pub fn get() -> String {
     .split_whitespace()
     .next()
     .unwrap()
-    .parse::<f32>()
+    .parse::<f64>()
     .unwrap()
-    / 60 as f32;
-  let years = Time {
-    label: "year",
-    value: (float_minutes / (60 * 24 * 365) as f32) as u16,
-  };
-  let days = Time {
-    label: "day",
-    value: (float_minutes / (60 * 24) as f32) as u16,
-  };
-  let hours = Time {
-    label: "hour",
-    value: ((float_minutes - (days.value * (60 * 24)) as f32) / 60 as f32) as u16,
-  };
-  let minutes = Time {
-    label: "minute",
-    value: (float_minutes - ((days.value * 60 * 24) + (hours.value * 60)) as f32) as u16,
-  };
+    / 60 as f64;
+  let years = Time::new("year", float_minutes / (60 * 24 * 365) as f64);
+  let days = Time::new("day", float_minutes / (60 * 24) as f64);
+  let hours = Time::new(
+    "hour",
+    (float_minutes % (float_minutes * (60 * 24) as f64)) / 60 as f64,
+  );
+  let minutes = Time::new(
+    "minute",
+    float_minutes - ((days.value * 60 * 24) + (hours.value * 60)) as f64,
+  );
   if years.value > 0 {
     format!("{}, {}, {}, and {}", years, days, hours, minutes)
   } else if days.value > 0 {
