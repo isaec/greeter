@@ -34,7 +34,7 @@ impl ColorRange {
   pub fn new(empty: Color, full: Color) -> ColorRange {
     ColorRange { empty, full }
   }
-  fn get_color(&self, value: f32) -> color::Fg<color::Rgb> {
+  pub fn get_color(&self, value: f32) -> color::Fg<color::Rgb> {
     color::Fg(Color::blend(&self.empty, &self.full, value).as_term_rgb())
   }
 }
