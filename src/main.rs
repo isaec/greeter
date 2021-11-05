@@ -25,7 +25,7 @@ fn main() {
     let uptime = uptime::get();
 
     let red_to_green = ColorRange::new(
-        Color::rgb(255, 0, 0), Color::rgb(0, 255, 0)
+        Color::rgb(255, 0, 50), Color::rgb(0, 255, 50)
     );
 
     println!(
