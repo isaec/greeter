@@ -24,9 +24,14 @@ fn main() {
     let sys_batt_percent = read_val("/sys/class/power_supply/BAT0/capacity"); // ideally would use BAT*
     let uptime = uptime::get();
 
-    let red_to_green = ColorRange::new(
-        Color::rgb(255, 0, 50), Color::rgb(0, 255, 50)
-    );
+    let red_to_green = ColorRange::new(Color::rgb(230, 0, 115), Color::rgb(0, 175, 100));
+    let blue_to_mag = ColorRange::new(Color::rgb(0, 175, 175), Color::rgb(230, 0, 115));
+
+    // for n in 0..=100 {
+    //     if n % 2 == 0 {
+    //         println!("{}", bar::make(30, n, &red_to_green, "<", "/", "-", ">"));
+    //     }
+    // }
 
     println!(
         "running at {red}{sys_temp}c{reset}
