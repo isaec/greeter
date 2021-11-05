@@ -17,7 +17,6 @@ impl Color {
     (((1.0 - ratio) * (a as u16).pow(2) as f32) + (ratio * (b as u16).pow(2) as f32)).sqrt() as u8
   }
   fn blend(a: &Color, b: &Color, ratio: f32) -> Color {
-    println!("test: {}", Color::blend_channel(60, 100, 0.5));
     Color {
       r: Color::blend_channel(a.r, b.r, ratio),
       g: Color::blend_channel(a.g, b.g, ratio),
@@ -43,7 +42,7 @@ impl ColorRange {
 pub fn make(
   length: u8,
   value: u16, // 0 to 100
-  color_range: ColorRange,
+  color_range: &ColorRange,
   left_cap: &str,
   full_char: &str,
   empty_char: &str,
