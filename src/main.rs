@@ -29,7 +29,7 @@ const MAX_BACKLIGHT: &str = "/sys/class/backlight/amdgpu_bl0/max_brightness";
 fn main() {
     let red_to_green = ColorRange::new(Color::rgb(230, 0, 115), Color::rgb(0, 175, 100));
     let blue_to_mag = ColorRange::new(Color::rgb(0, 175, 230), Color::rgb(230, 0, 115));
-    let reset = color::Fg(color::Rgb(150, 152, 150));
+    let default = color::Fg(color::Rgb(150, 152, 150));
 
     let sys_batt_percent = read_val(BAT_CAPACITY);
     // &fn[..] converts String to &str for easy matching
@@ -37,14 +37,14 @@ fn main() {
         "Charging" => format!(
             "{}charging battery{} at {}%",
             red_to_green.get_color(0.8),
-            reset,
+            default,
             sys_batt_percent
         ),
-        "Full" => format!("{}full battery{}", red_to_green.get_color(1.0), reset),
+        "Full" => format!("{}full battery{}", red_to_green.get_color(1.0), default),
         _ => format!(
             "{}draining battery{} at {}%",
             red_to_green.get_color(0.2),
-            reset,
+            default,
             sys_batt_percent
         ),
     };
@@ -60,7 +60,7 @@ fn main() {
     // }
 
     println!(
-        "{reset}running at {red}{sys_temp}c{reset}
+        "{default}running at {sys_temp}c
 on {kernel_vers}
 for {uptime}
 at {display_percent}% brightness
@@ -68,16 +68,16 @@ at {display_percent}% brightness
 {audio_bar}
 with a {batt_status}
 {batt_bar}
-",
+{reset}",
         sys_temp = read_val("/sys/class/thermal/thermal_zone0/temp") / 1000, // celsius
         uptime = uptime::get(),
         display_percent = display_percent,
-        display_bar = bar::make(20, display_percent, &blue_to_mag, "<", "/", "-", ">", &reset),
-        audio_bar = bar::make(20, audio_level, &blue_to_mag, "<", "\\", "-", ">", &reset),
+        display_bar = bar::make(20, display_percent, &blue_to_mag, "<", "/", "-", ">", &default),
+        audio_bar = bar::make(20, audio_level, &blue_to_mag, "<", "\\", "-", ">", &default),
         batt_status = batt_status,
-        batt_bar = bar::make(30, sys_batt_percent, &red_to_green, "|", "=", "-", "|", &reset),
+        batt_bar = bar::make(30, sys_batt_percent, &red_to_green, "|", "=", "-", "|", &default),
         kernel_vers = read_val_str("/proc/sys/kernel/osrelease"), // equivalent to uname -r
-        red = color::Fg(color::Red),
-        reset = reset,
+        default = default,
+        reset = color::Fg(color::Reset),
     );
 }
