@@ -1,6 +1,6 @@
 use std::process::Command;
 
-pub fn get() -> (u8, bool) {
+pub fn get() -> (u16, bool) {
   let output = Command::new("amixer")
     .args(["-D", "pulse", "get", "Master"])
     .output()
@@ -15,7 +15,7 @@ pub fn get() -> (u8, bool) {
     .map(|x| x.trim_matches(&['[', ']', '%'] as &[_]))
     .collect::<Vec<&str>>();
 
-  let volume = data.get(0).unwrap().parse::<u8>().unwrap();
+  let volume = data.get(0).unwrap().parse::<u16>().unwrap();
 
   let enabled = *data.get(1).unwrap() != "on";
 

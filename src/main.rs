@@ -65,7 +65,7 @@ on {kernel_vers}
 for {uptime}
 at {display_percent}% brightness
 {display_bar}
-{audio_enabled} {audio_level}
+{audio_bar}
 with a {batt_status}
 {batt_bar}
 ",
@@ -73,8 +73,7 @@ with a {batt_status}
         uptime = uptime::get(),
         display_percent = display_percent,
         display_bar = bar::make(20, display_percent, &blue_to_mag, "<", "/", "-", ">"),
-        audio_enabled = audio_enabled,
-        audio_level = audio_level,
+        audio_bar = bar::make(20, audio_level, &blue_to_mag, "<", "\\", "-", ">"),
         batt_status = batt_status,
         batt_bar = bar::make(30, sys_batt_percent, &red_to_green, "|", "=", "-", "|"),
         kernel_vers = read_val_str("/proc/sys/kernel/osrelease"), // equivalent to uname -r
