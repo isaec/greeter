@@ -1,8 +1,8 @@
-use std::process::{Command, Stdio};
+use std::process::Command;
 
 pub fn get() -> (u8, bool) {
   let output = Command::new("amixer")
-    .args(&["-D", "pulse", "get", "Master"])
+    .args(["-D", "pulse", "get", "Master"])
     .output()
     .map(|o| String::from_utf8_lossy(&o.stdout).trim().to_owned())
     .unwrap();
