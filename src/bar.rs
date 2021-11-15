@@ -47,6 +47,7 @@ pub fn make(
   full_char: &str,
   empty_char: &str,
   right_cap: &str,
+  reset: &color::Fg<color::Rgb>,
 ) -> String {
   let inner_chars = (length - 2) as f32;
   let value_dec = value as f32 / 100.0;
@@ -57,7 +58,7 @@ pub fn make(
     empty_chars = empty_char.repeat((inner_chars * (1.0 - value_dec)).floor() as usize),
     left_cap = left_cap,
     color = color_range.get_color(value_dec),
-    reset = color::Fg(color::Reset),
+    reset = reset,
     right_cap = right_cap
   )
 }

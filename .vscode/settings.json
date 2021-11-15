@@ -1,6 +1,7 @@
 {
   "cSpell.words": [
     "amixer",
-    "osrelease"
+    "osrelease",
+    "termion"
   ]
 }
