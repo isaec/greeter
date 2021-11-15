@@ -29,8 +29,8 @@ const ACTUAL_BACKLIGHT: &str = "/sys/class/backlight/amdgpu_bl0/actual_brightnes
 const MAX_BACKLIGHT: &str = "/sys/class/backlight/amdgpu_bl0/max_brightness";
 
 fn main() {
-    let red_to_green = ColorRange::new(Color::rgb(230, 0, 115), Color::rgb(255, 255, 255), Color::rgb(0, 175, 100));
-    let blue_to_mag = ColorRange::new(Color::rgb(0, 175, 230), Color::rgb(255, 255, 255), Color::rgb(230, 0, 115));
+    let red_to_green = ColorRange::new3(Color::rgb(230, 0, 115), Color::rgb(255, 255, 0), Color::rgb(0, 175, 100));
+    let blue_to_mag = ColorRange::new2(Color::rgb(0, 175, 230), Color::rgb(230, 0, 115));
     let default = color::Fg(color::Rgb(150, 152, 150));
 
     let sys_batt_percent = read_val(BAT_CAPACITY);
@@ -57,7 +57,7 @@ fn main() {
 
     for n in 0..=100 {
         if n % 2 == 0 {
-            println!("{}", bar::make(30, n, &blue_to_mag, "<", "/", "-", ">", &default));
+            println!("{} {}", bar::make(30, n, &blue_to_mag, "<", "/", "-", ">", &default), n);
         }
     }
 

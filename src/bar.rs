@@ -16,18 +16,25 @@ impl Color {
   fn blend_two_channel(a: u8, b: u8, ratio: f32) -> u8 {
     (((1.0 - ratio) * (a as u16).pow(2) as f32) + (ratio * (b as u16).pow(2) as f32)).sqrt() as u8
   }
-  fn blend_channel(a: u8, b: u8, c: u8, ratio: f32) -> u8 {
+  fn blend_three_channel(a: u8, b: u8, c: u8, ratio: f32) -> u8 {
     Color::blend_two_channel(
       Color::blend_two_channel(a, b, ratio),
       Color::blend_two_channel(b, c, ratio),
       ratio,
     )
   }
-  fn blend(a: &Color, b: &Color, c: &Color, ratio: f32) -> Color {
+  fn blend_two(a: &Color, b: &Color, ratio: f32) -> Color {
     Color {
-      r: Color::blend_channel(a.r, b.r, c.r, ratio),
-      g: Color::blend_channel(a.g, b.g, c.g, ratio),
-      b: Color::blend_channel(a.b, b.b, c.b, ratio),
+      r: Color::blend_two_channel(a.r, b.r, ratio),
+      g: Color::blend_two_channel(a.g, b.g, ratio),
+      b: Color::blend_two_channel(a.b, b.b, ratio),
+    }
+  }
+  fn blend_three(a: &Color, b: &Color, c: &Color, ratio: f32) -> Color {
+    Color {
+      r: Color::blend_three_channel(a.r, b.r, c.r, ratio),
+      g: Color::blend_three_channel(a.g, b.g, c.g, ratio),
+      b: Color::blend_three_channel(a.b, b.b, c.b, ratio),
     }
   }
 }
@@ -39,11 +46,15 @@ pub struct ColorRange {
 }
 
 impl ColorRange {
-  pub fn new(empty: Color, mid: Color, full: Color) -> ColorRange {
+  pub fn new2(empty: Color, full: Color) -> ColorRange {
+    let mid = Color::blend_two(&empty, &full, 50_f32);
+    ColorRange::new3(empty, mid, full)
+  }
+  pub fn new3(empty: Color, mid: Color, full: Color) -> ColorRange {
     ColorRange { empty, mid, full }
   }
   pub fn get_color(&self, value: f32) -> color::Fg<color::Rgb> {
-    color::Fg(Color::blend(&self.empty, &self.mid, &self.full, value).as_term_rgb())
+    color::Fg(Color::blend_three(&self.empty, &self.mid, &self.full, value).as_term_rgb())
   }
 }
 
