@@ -41,20 +41,26 @@ impl Color {
 
 pub struct ColorRange {
   empty: Color,
-  mid: Color,
+  mid: Option<Color>,
   full: Color,
 }
 
 impl ColorRange {
   pub fn new2(empty: Color, full: Color) -> ColorRange {
-    let mid = Color::blend_two(&empty, &full, 50_f32);
-    ColorRange::new3(empty, mid, full)
+    ColorRange {
+      empty,
+      mid: None,
+      full,
+    }
   }
   pub fn new3(empty: Color, mid: Color, full: Color) -> ColorRange {
-    ColorRange { empty, mid, full }
+    ColorRange { empty, mid: Some(mid), full }
   }
   pub fn get_color(&self, value: f32) -> color::Fg<color::Rgb> {
-    color::Fg(Color::blend_three(&self.empty, &self.mid, &self.full, value).as_term_rgb())
+    match &self.mid {
+      Some(mid) => color::Fg(Color::blend_three(&self.empty, mid, &self.full, value).as_term_rgb()),
+      None => color::Fg(Color::blend_two(&self.empty, &self.full, value).as_term_rgb())
+    }
   }
 }
 
