@@ -21,6 +21,8 @@ fn read_val_str(path: &str) -> String {
     String::from(fs::read_to_string(path).unwrap().trim())
 }
 
+const BAR_WIDTH: u8 = 25;
+
 const BAT_CAPACITY: &str = "/sys/class/power_supply/BAT0/capacity"; // ideally would use BAT*
 const BAT_STATUS: &str = "/sys/class/power_supply/BAT0/status";
 const ACTUAL_BACKLIGHT: &str = "/sys/class/backlight/amdgpu_bl0/actual_brightness";
@@ -35,17 +37,17 @@ fn main() {
     // &fn[..] converts String to &str for easy matching
     let batt_status = match &read_val_str(BAT_STATUS)[..] {
         "Charging" => format!(
-            "{}charging battery{} at {}%",
-            red_to_green.get_color(0.8),
-            default,
-            sys_batt_percent
+            "{c}charging battery{r} at {c}{}%{r}",
+            sys_batt_percent,
+            c = red_to_green.get_color(0.8),
+            r = default,
         ),
         "Full" => format!("{}full battery{}", red_to_green.get_color(1.0), default),
         _ => format!(
-            "{}draining battery{} at {}%",
-            red_to_green.get_color(0.2),
-            default,
-            sys_batt_percent
+            "{c}draining battery{r} at {c}{}%{r}",
+            sys_batt_percent,
+            c = red_to_green.get_color(0.2),
+            r = default,
         ),
     };
     let display_percent =
@@ -72,8 +74,8 @@ with a {batt_status}
         sys_temp = read_val("/sys/class/thermal/thermal_zone0/temp") / 1000, // celsius
         uptime = uptime::get(),
         display_percent = display_percent,
-        display_bar = bar::make(20, display_percent, &blue_to_mag, "<", "/", "-", ">", &default),
-        audio_bar = bar::make(20, audio_level, &blue_to_mag, "<", "\\", "-", ">", &default),
+        display_bar = bar::make(BAR_WIDTH, display_percent, &blue_to_mag, "<", "/", "-", ">", &default),
+        audio_bar = bar::make(BAR_WIDTH, audio_level, &blue_to_mag, "<", "\\", "-", ">", &default),
         batt_status = batt_status,
         batt_bar = bar::make(30, sys_batt_percent, &red_to_green, "|", "=", "-", "|", &default),
         kernel_vers = read_val_str("/proc/sys/kernel/osrelease"), // equivalent to uname -r
