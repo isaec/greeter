@@ -13,29 +13,37 @@ impl Color {
   fn as_term_rgb(&self) -> color::Rgb {
     color::Rgb(self.r, self.g, self.b)
   }
-  fn blend_channel(a: u8, b: u8, ratio: f32) -> u8 {
+  fn blend_two_channel(a: u8, b: u8, ratio: f32) -> u8 {
     (((1.0 - ratio) * (a as u16).pow(2) as f32) + (ratio * (b as u16).pow(2) as f32)).sqrt() as u8
   }
-  fn blend(a: &Color, b: &Color, ratio: f32) -> Color {
+  fn blend_channel(a: u8, b: u8, c: u8, ratio: f32) -> u8 {
+    Color::blend_two_channel(
+      Color::blend_two_channel(a, b, ratio),
+      Color::blend_two_channel(b, c, ratio),
+      ratio,
+    )
+  }
+  fn blend(a: &Color, b: &Color, c: &Color, ratio: f32) -> Color {
     Color {
-      r: Color::blend_channel(a.r, b.r, ratio),
-      g: Color::blend_channel(a.g, b.g, ratio),
-      b: Color::blend_channel(a.b, b.b, ratio),
+      r: Color::blend_channel(a.r, b.r, c.r, ratio),
+      g: Color::blend_channel(a.g, b.g, c.g, ratio),
+      b: Color::blend_channel(a.b, b.b, c.b, ratio),
     }
   }
 }
 
 pub struct ColorRange {
   empty: Color,
+  mid: Color,
   full: Color,
 }
 
 impl ColorRange {
-  pub fn new(empty: Color, full: Color) -> ColorRange {
-    ColorRange { empty, full }
+  pub fn new(empty: Color, mid: Color, full: Color) -> ColorRange {
+    ColorRange { empty, mid, full }
   }
   pub fn get_color(&self, value: f32) -> color::Fg<color::Rgb> {
-    color::Fg(Color::blend(&self.empty, &self.full, value).as_term_rgb())
+    color::Fg(Color::blend(&self.empty, &self.mid, &self.full, value).as_term_rgb())
   }
 }
 
