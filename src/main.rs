@@ -51,7 +51,7 @@ fn main() {
         ),
     };
     let display_percent =
-        ((read_val(ACTUAL_BACKLIGHT) as f32 / read_val(MAX_BACKLIGHT) as f32) * 100.0).ceil() as u16;
+        ((read_val(ACTUAL_BACKLIGHT) as f32 / read_val(MAX_BACKLIGHT) as f32) * 100.0).round() as u16;
 
     let (audio_level, audio_enabled) = audio::get();
 
