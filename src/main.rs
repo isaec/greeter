@@ -30,7 +30,7 @@ const ACTUAL_BACKLIGHT: &str = "/sys/class/backlight/amdgpu_bl0/actual_brightnes
 const MAX_BACKLIGHT: &str = "/sys/class/backlight/amdgpu_bl0/max_brightness";
 
 fn main() {
-    let red_to_green = ColorRange::new3(Color::rgb(230, 0, 115), Color::rgb(255, 255, 0), Color::rgb(0, 175, 100));
+    let red_to_green = ColorRange::new3(Color::rgb(230, 0, 115), Color::rgb(230, 230, 60), Color::rgb(50, 200, 50));
     let blue_to_mag = ColorRange::new2(Color::rgb(0, 175, 230), Color::rgb(230, 0, 115));
     let default = color::Fg(color::Rgb(150, 152, 150));
 
