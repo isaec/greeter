@@ -32,6 +32,7 @@ const MAX_BACKLIGHT: &str = "/sys/class/backlight/amdgpu_bl0/max_brightness";
 fn main() {
     let red_to_green = ColorRange::new3(Color::rgb(230, 0, 115), Color::rgb(230, 230, 60), Color::rgb(50, 200, 50));
     let blue_to_mag = ColorRange::new2(Color::rgb(0, 175, 230), Color::rgb(230, 0, 115));
+    let yellow_to_red = ColorRange::new2(Color::rgb(230, 230, 100), Color::rgb(230, 100, 150));
     let default = color::Fg(color::Rgb(150, 152, 150));
 
     let sys_batt_percent = read_val(BAT_CAPACITY);
@@ -76,7 +77,7 @@ with a {batt_status}
         sys_temp = read_val("/sys/class/thermal/thermal_zone0/temp") / 1000, // celsius
         uptime = uptime::get(),
         display_percent = display_percent,
-        display_bar = bar::make(BAR_WIDTH, display_percent, &blue_to_mag, "<", "/", "-", ">", &default),
+        display_bar = bar::make(BAR_WIDTH, display_percent, &yellow_to_red, "<", "/", "-", ">", &default),
         audio_bar = bar::make(BAR_WIDTH, audio_level, &blue_to_mag, "<", "\\", "-", ">", &default),
         audio_state = if audio_enabled { "on" } else { "muted" },
         audio_level = audio_level,
