@@ -1,6 +1,7 @@
 extern crate termion;
 
 use std::fs;
+use std::cmp::{min, max};
 use termion::color;
 
 mod bar;
@@ -39,14 +40,14 @@ fn main() {
         "Charging" => format!(
             "{c}charging battery{r} at {c}{}%{r}",
             sys_batt_percent,
-            c = red_to_green.get_color(0.8),
+            c = red_to_green.get_color(max(70, sys_batt_percent) as f32 / 100_f32),
             r = default,
         ),
         "Full" => format!("{}full battery{}", red_to_green.get_color(1.0), default),
         _ => format!(
             "{c}draining battery{r} at {c}{}%{r}",
             sys_batt_percent,
-            c = red_to_green.get_color(0.2),
+            c = red_to_green.get_color(min(30, sys_batt_percent) as f32 / 100_f32),
             r = default,
         ),
     };
@@ -55,11 +56,11 @@ fn main() {
 
     let (audio_level, audio_enabled) = audio::get();
 
-    for n in 0..=100 {
-        if n % 2 == 0 {
-            println!("{} {}", bar::make(30, n, &blue_to_mag, "<", "/", "-", ">", &default), n);
-        }
-    }
+    // for n in 0..=100 {
+    //     if n % 2 == 0 {
+    //         println!("{} {}", bar::make(30, n, &red_to_green, "<", "/", "-", ">", &default), n);
+    //     }
+    // }
 
     println!(
         "{default}running at {sys_temp}c
@@ -68,6 +69,7 @@ for {uptime}
 at {display_percent}% brightness
 {display_bar}
 {audio_bar}
+sound {audio_state} at {audio_level}% volume
 with a {batt_status}
 {batt_bar}
 {reset}",
@@ -76,6 +78,8 @@ with a {batt_status}
         display_percent = display_percent,
         display_bar = bar::make(BAR_WIDTH, display_percent, &blue_to_mag, "<", "/", "-", ">", &default),
         audio_bar = bar::make(BAR_WIDTH, audio_level, &blue_to_mag, "<", "\\", "-", ">", &default),
+        audio_state = if audio_enabled { "on" } else { "muted" },
+        audio_level = audio_level,
         batt_status = batt_status,
         batt_bar = bar::make(30, sys_batt_percent, &red_to_green, "|", "=", "-", "|", &default),
         kernel_vers = read_val_str("/proc/sys/kernel/osrelease"), // equivalent to uname -r
