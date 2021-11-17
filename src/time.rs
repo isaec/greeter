@@ -1,5 +1,6 @@
 use std::fmt;
 use std::fs;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 struct Time<'a> {
   label: &'a str,
@@ -31,7 +32,7 @@ const HOUR: f64 = 60 as f64;
 const DAY: f64 = HOUR * 24 as f64;
 const YEAR: f64 = DAY * 365 as f64;
 
-pub fn get() -> String {
+pub fn get_uptime() -> String {
   let float_minutes = fs::read_to_string("/proc/uptime")
     .unwrap()
     .split_whitespace()
@@ -51,8 +52,25 @@ pub fn get() -> String {
   let len = time.len() - 1;
   let mut result = "".to_string();
   for (i, unit) in time.iter().enumerate() {
-    result = format!("{}{}{}", result, unit, if i == len { "" } else if i == len - 1 { " and " } else { ", " });
+    result = format!(
+      "{}{}{}",
+      result,
+      unit,
+      if i == len {
+        ""
+      } else if i == len - 1 {
+        " and "
+      } else {
+        ", "
+      }
+    );
   }
 
   result
+}
+
+pub fn get_date_time() -> String {
+  let since_epoch = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
+  let seconds = since_epoch.as_secs();
+  format!("{}", seconds)
 }

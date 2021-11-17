@@ -8,7 +8,7 @@ mod bar;
 use bar::Color;
 use bar::ColorRange;
 mod audio;
-mod uptime;
+mod time;
 
 fn read_val(path: &str) -> u16 {
     fs::read_to_string(path)
@@ -85,7 +85,7 @@ with a {batt_status}
 {batt_bar}
 {reset}",
         sys_temp = read_val("/sys/class/thermal/thermal_zone0/temp") / 1000, // celsius
-        uptime = uptime::get(),
+        uptime = time::get_uptime(),
         display_percent = display_percent,
         display_bar = bar::make(
             BAR_WIDTH,
