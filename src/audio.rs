@@ -17,7 +17,7 @@ pub fn get() -> (u16, bool) {
 
   let volume = data.get(0).unwrap().parse::<u16>().unwrap();
 
-  let enabled = *data.get(1).unwrap() != "on";
+  let enabled = *data.get(1).unwrap() == "on";
 
   (volume, enabled)
 }
