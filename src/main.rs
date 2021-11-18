@@ -22,7 +22,7 @@ fn read_val_str(path: &str) -> String {
     String::from(fs::read_to_string(path).unwrap().trim())
 }
 
-const BAR_WIDTH: u8 = 25;
+const BAR_WIDTH: u8 = 22;
 
 const BAT_CAPACITY: &str = "/sys/class/power_supply/BAT0/capacity"; // ideally would use BAT*
 const BAT_STATUS: &str = "/sys/class/power_supply/BAT0/status";
@@ -36,6 +36,7 @@ fn main() {
         Color::rgb(50, 200, 50),
     );
     let blue_to_mag = ColorRange::new2(Color::rgb(0, 175, 230), Color::rgb(230, 0, 115));
+    let red_to_purple = ColorRange::new2(Color::rgb(210, 50, 100), Color::rgb(210, 100, 180));
     let yellow_to_red = ColorRange::new2(Color::rgb(230, 230, 100), Color::rgb(230, 100, 150));
     let default = color::Fg(color::Rgb(150, 152, 150));
 
@@ -67,9 +68,15 @@ fn main() {
 
     let (audio_level, audio_enabled) = audio::get();
 
+    let date = time::total();
+
     // for n in 0..=100 {
     //     if n % 2 == 0 {
-    //         println!("{} {}", bar::make(30, n, &blue_to_mag, "<", "/", "-", ">", &default), n);
+    //         println!(
+    //             "{} {}",
+    //             bar::make(30, n, &red_to_purple, "</->", &default),
+    //             n
+    //         );
     //     }
     // }
 
@@ -89,13 +96,29 @@ with a {batt_status}
         uptime = time::up(),
         display_percent = display_percent,
         display_bar = bar::make(BAR_WIDTH, display_percent, &yellow_to_red, "</->", &default),
-        audio_bar = bar::make(BAR_WIDTH, audio_level, &blue_to_mag, "<\\->", &default),
+        audio_bar = bar::make(
+            BAR_WIDTH,
+            audio_level,
+            if audio_enabled {
+                &blue_to_mag
+            } else {
+                &red_to_purple
+            },
+            "<\\->",
+            &default
+        ),
         audio_state = if audio_enabled { "on" } else { "muted" },
         audio_level = audio_level,
         batt_status = batt_status,
-        batt_bar = bar::make(30, sys_batt_percent, &red_to_green, "|=-|", &default),
+        batt_bar = bar::make(
+            date.len() as u8,
+            sys_batt_percent,
+            &red_to_green,
+            "|=-|",
+            &default
+        ),
         kernel_vers = read_val_str("/proc/sys/kernel/osrelease"), // equivalent to uname -r
-        date = time::total(),
+        date = date,
         default = default,
         reset = color::Fg(color::Reset),
     );
