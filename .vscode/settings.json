@@ -1,8 +1,3 @@
 {
-  "cSpell.words": [
-    "amdgpu",
-    "amixer",
-    "osrelease",
-    "termion"
-  ]
+  "cSpell.words": ["amdgpu", "amixer", "chrono", "osrelease", "termion"]
 }
