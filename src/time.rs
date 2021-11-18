@@ -29,9 +29,9 @@ impl fmt::Display for Time<'_> {
     }
 }
 
-const HOUR: f64 = 60 as f64;
-const DAY: f64 = HOUR * 24 as f64;
-const YEAR: f64 = DAY * 365 as f64;
+const HOUR: f64 = 60.0;
+const DAY: f64 = HOUR * 24.0;
+const YEAR: f64 = DAY * 365.0;
 
 pub fn get_uptime() -> String {
     let float_minutes = fs::read_to_string("/proc/uptime")
@@ -41,7 +41,7 @@ pub fn get_uptime() -> String {
         .unwrap()
         .parse::<f64>()
         .unwrap()
-        / 60 as f64;
+        / 60.0;
 
     let mut time = vec![
         Time::new("year", float_minutes / YEAR),
