@@ -71,5 +71,8 @@ pub fn get_uptime() -> String {
 }
 
 pub fn get_date_time() -> String {
-  Local::now().format("at %-I:%M %P on %A, %B %d, %Y").to_string().to_lowercase()
+  Local::now()
+    .format("at %-I:%M %P on %A, %B %d, %Y")
+    .to_string()
+    .to_lowercase()
 }
