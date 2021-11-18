@@ -90,8 +90,7 @@ at {display_percent}% brightness
 sound {audio_state} at {audio_level}% volume
 with a {batt_status}
 {batt_bar}
-{date}
-{reset}",
+{date}{reset}",
         sys_temp = read_val("/sys/class/thermal/thermal_zone0/temp") / 1000, // celsius
         uptime = time::up(),
         display_percent = display_percent,
