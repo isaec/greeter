@@ -54,12 +54,16 @@ impl ColorRange {
     }
   }
   pub fn new3(empty: Color, mid: Color, full: Color) -> ColorRange {
-    ColorRange { empty, mid: Some(mid), full }
+    ColorRange {
+      empty,
+      mid: Some(mid),
+      full,
+    }
   }
   pub fn get_color(&self, value: f32) -> color::Fg<color::Rgb> {
     match &self.mid {
       Some(mid) => color::Fg(Color::blend_three(&self.empty, mid, &self.full, value).as_term_rgb()),
-      None => color::Fg(Color::blend_two(&self.empty, &self.full, value).as_term_rgb())
+      None => color::Fg(Color::blend_two(&self.empty, &self.full, value).as_term_rgb()),
     }
   }
 }
@@ -68,12 +72,15 @@ pub fn make(
   length: u8,
   value: u16, // 0 to 100
   color_range: &ColorRange,
-  left_cap: &str,
-  full_char: &str,
-  empty_char: &str,
-  right_cap: &str,
+  bar_str: &str,
   reset: &color::Fg<color::Rgb>,
 ) -> String {
+  // <=->
+  let left_cap = &bar_str[0..1]; // <
+  let full_char = &bar_str[1..2]; // =
+  let empty_char = &bar_str[2..3]; // -
+  let right_cap = &bar_str[3..4]; // >
+
   let inner_chars = (length - 2) as f32;
   let value_dec = value as f32 / 100.0;
 

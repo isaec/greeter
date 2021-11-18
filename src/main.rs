@@ -88,39 +88,12 @@ with a {batt_status}
         sys_temp = read_val("/sys/class/thermal/thermal_zone0/temp") / 1000, // celsius
         uptime = time::get_uptime(),
         display_percent = display_percent,
-        display_bar = bar::make(
-            BAR_WIDTH,
-            display_percent,
-            &yellow_to_red,
-            "<",
-            "/",
-            "-",
-            ">",
-            &default
-        ),
-        audio_bar = bar::make(
-            BAR_WIDTH,
-            audio_level,
-            &blue_to_mag,
-            "<",
-            "\\",
-            "-",
-            ">",
-            &default
-        ),
+        display_bar = bar::make(BAR_WIDTH, display_percent, &yellow_to_red, "</->", &default),
+        audio_bar = bar::make(BAR_WIDTH, audio_level, &blue_to_mag, "<\\->", &default),
         audio_state = if audio_enabled { "on" } else { "muted" },
         audio_level = audio_level,
         batt_status = batt_status,
-        batt_bar = bar::make(
-            30,
-            sys_batt_percent,
-            &red_to_green,
-            "|",
-            "=",
-            "-",
-            "|",
-            &default
-        ),
+        batt_bar = bar::make(30, sys_batt_percent, &red_to_green, "|=-|", &default),
         kernel_vers = read_val_str("/proc/sys/kernel/osrelease"), // equivalent to uname -r
         date = time::get_date_time(),
         default = default,
