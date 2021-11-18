@@ -1,6 +1,7 @@
 use std::fmt;
 use std::fs;
-use std::time::{SystemTime, UNIX_EPOCH};
+
+use chrono::prelude::Local;
 
 struct Time<'a> {
   label: &'a str,
@@ -70,7 +71,5 @@ pub fn get_uptime() -> String {
 }
 
 pub fn get_date_time() -> String {
-  let since_epoch = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
-  let seconds = since_epoch.as_secs();
-  format!("{}", seconds)
+  Local::now().format("at %-I:%M %P on %A, %B %d, %Y").to_string().to_lowercase()
 }

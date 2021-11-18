@@ -83,6 +83,7 @@ at {display_percent}% brightness
 sound {audio_state} at {audio_level}% volume
 with a {batt_status}
 {batt_bar}
+{date}
 {reset}",
         sys_temp = read_val("/sys/class/thermal/thermal_zone0/temp") / 1000, // celsius
         uptime = time::get_uptime(),
@@ -121,6 +122,7 @@ with a {batt_status}
             &default
         ),
         kernel_vers = read_val_str("/proc/sys/kernel/osrelease"), // equivalent to uname -r
+        date = time::get_date_time(),
         default = default,
         reset = color::Fg(color::Reset),
     );
