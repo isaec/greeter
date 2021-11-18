@@ -9,7 +9,7 @@ struct Time<'a> {
 }
 
 impl Time<'_> {
-    fn new<'a>(label: &'a str, value: f64) -> Time<'_> {
+    fn new(label: &str, value: f64) -> Time {
         Time {
             label,
             value: value as u64,
@@ -33,7 +33,7 @@ const HOUR: f64 = 60.0;
 const DAY: f64 = HOUR * 24.0;
 const YEAR: f64 = DAY * 365.0;
 
-pub fn get_uptime() -> String {
+pub fn up() -> String {
     let float_minutes = fs::read_to_string("/proc/uptime")
         .unwrap()
         .split_whitespace()
@@ -70,7 +70,7 @@ pub fn get_uptime() -> String {
     result
 }
 
-pub fn get_date_time() -> String {
+pub fn total() -> String {
     Local::now()
         .format("at %-I:%M %P on %A, %B %d, %Y")
         .to_string()
