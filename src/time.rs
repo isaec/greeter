@@ -67,7 +67,11 @@ pub fn up() -> String {
         );
     }
 
-    result
+    if result.len() > 0 {
+        result
+    } else {
+        "less than a minute".to_string()
+    }
 }
 
 pub fn total() -> String {
