@@ -17,7 +17,7 @@ fn read_val(path: &str) -> u16 {
 }
 
 fn read_val_str(path: &str) -> String {
-    String::from(fs::read_to_string(path).unwrap().trim())
+    fs::read_to_string(path).map_or_else(|e| e.to_string(), |v| String::from(v.trim()))
 }
 
 const BAR_WIDTH: u8 = 22;
