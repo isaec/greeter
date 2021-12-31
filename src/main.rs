@@ -11,11 +11,11 @@ mod audio;
 mod time;
 
 fn read_val(path: &str) -> u16 {
-    fs::read_to_string(path)
-        .unwrap()
-        .trim()
-        .parse::<u16>()
-        .unwrap()
+    const DEFAULT: u16 = 0;
+    fs::read_to_string(path).map_or_else(
+        |_e| DEFAULT,
+        |s| s.trim().parse::<u16>().unwrap_or_default(),
+    )
 }
 
 fn read_val_str(path: &str) -> String {
