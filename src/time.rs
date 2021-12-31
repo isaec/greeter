@@ -34,43 +34,47 @@ const DAY: f64 = HOUR * 24.0;
 const YEAR: f64 = DAY * 365.0;
 
 pub fn up() -> String {
-    let float_minutes = fs::read_to_string("/proc/uptime")
-        .unwrap()
-        .split_whitespace()
-        .next()
-        .unwrap()
-        .parse::<f64>()
-        .unwrap()
-        / 60.0;
+    match fs::read_to_string("/proc/uptime") {
+        Err(_e) => "unknown time".to_string(),
+        Ok(uptime) => {
+            let float_minutes = uptime
+                .split_whitespace()
+                .next()
+                .unwrap_or_default()
+                .parse::<f64>()
+                .unwrap_or_default()
+                / 60.0;
 
-    let mut time = vec![
-        Time::new("year", float_minutes / YEAR),
-        Time::new("day", float_minutes % YEAR / DAY),
-        Time::new("hour", float_minutes % DAY / HOUR),
-        Time::new("minute", float_minutes % HOUR),
-    ];
-    time.retain(|unit| unit.value != 0);
-    let len = time.len() - 1;
-    let mut result = "".to_string();
-    for (i, unit) in time.iter().enumerate() {
-        result = format!(
-            "{}{}{}",
-            result,
-            unit,
-            if i == len {
-                ""
-            } else if i == len - 1 {
-                " and "
-            } else {
-                ", "
+            let mut time = vec![
+                Time::new("year", float_minutes / YEAR),
+                Time::new("day", float_minutes % YEAR / DAY),
+                Time::new("hour", float_minutes % DAY / HOUR),
+                Time::new("minute", float_minutes % HOUR),
+            ];
+            time.retain(|unit| unit.value != 0);
+            let len = time.len() - 1;
+            let mut result = "".to_string();
+            for (i, unit) in time.iter().enumerate() {
+                result = format!(
+                    "{}{}{}",
+                    result,
+                    unit,
+                    if i == len {
+                        ""
+                    } else if i == len - 1 {
+                        " and "
+                    } else {
+                        ", "
+                    }
+                );
             }
-        );
-    }
 
-    if result.len() > 0 {
-        result
-    } else {
-        "less than a minute".to_string()
+            if result.len() > 0 {
+                result
+            } else {
+                "less than a minute".to_string()
+            }
+        }
     }
 }
 
