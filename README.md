@@ -1,6 +1,6 @@
 # greeter
 
-Personal shell greeter for fish shell. Would probably work with other shells, although applying it would be slightly different. Probably not portable to other unix systems. This implementation is a rewrite of a fishscript version, which took ~350ms. Now it just takes ~40ms, most of which is shelling out to a command to get audio level. Fun little project to learn a bit of rust and make my terminal start faster.
+Personal shell greeter for fish shell. Would probably work with other shells, although applying it would be slightly different. Probably not portable to other unix systems. This implementation is a rewrite of a fishscript version, which took ~350ms. Now it just takes ~20ms. Fun little project to learn a bit of rust and make my terminal start faster.
 
 <p align="middle">
   <img src="https://user-images.githubusercontent.com/72410860/143627323-a0da15df-6f70-4cb5-a8e1-01a582e77871.png" width="100%"/>
